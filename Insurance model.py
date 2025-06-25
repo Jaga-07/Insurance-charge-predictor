@@ -1,10 +1,11 @@
+%%writefile app.py
 import streamlit as st
 import numpy as np
 import joblib
 
-# Load the trained model
+# Load the trained models
 model = joblib.load('best_gradient_boosting_model.pkl')
-model1=joblib.load('linear_regression_model.joblib')
+model1 = joblib.load('linear_regression_model.joblib')
 
 # Title
 st.title("💸 Insurance Charge Prediction App 💸")
@@ -27,11 +28,18 @@ smoker_encoded = 1 if smoker == "Yes" else 0
 if st.button("Predict Insurance Charges 💰"):
     input_data = np.array([[claim_amount, past_consultations, hospital_expenditure,
                             annual_salary, children, smoker_encoded]])
-    
-    # Prediction
+
+    # Predictions
     prediction = model.predict(input_data)[0]
     prediction1 = model1.predict(input_data)[0]
 
-    # Display Result
-    st.success(f"Estimated Insurance Charge: ₹{prediction:,.2f}")
-    st.success(f"Estimated Insurance Charge: ₹{prediction1:,.2f}")
+    # Display Results in Tabs
+    tab1, tab2 = st.tabs(["Gradient Boosting Model", "Linear Regression Model"])
+
+    with tab1:
+        st.subheader("💸 Gradient Boosting Model Prediction")
+        st.success(f"Estimated Insurance Charge: ₹{prediction:,.2f}")
+
+    with tab2:
+        st.subheader("💵 Linear Regression Model Prediction")
+        st.info(f"Estimated Insurance Charge: ₹{prediction1:,.2f}")
